@@ -39,3 +39,43 @@ async function createArticles() {
 }
 
 window.addEventListener("load", createArticles);
+
+async function addArticle() {
+  const title = input.value;
+  const body = textarea.value;
+
+  if (!title.trim()) {
+    alert("入力必須です！");
+    return;
+  }
+
+  try {
+    // 送りたいデータ
+    const data = {
+      title: title,
+      body: body,
+      userId: 1,
+    };
+
+    const res = await window.fetch(
+      "https://jsonplaceholder.typicode.com/posts",
+      {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      }
+    );
+    const post = await res.json();
+    const article = createArticle(post);
+    main.prepend(article);
+    input.value = "";
+    textarea.value = "";
+  } catch (error) {
+    // エラーのログを送る
+    alert("投稿に失敗しました。時間が経ってから再度お試しください。");
+  }
+}
+
+button.addEventListener("click", addArticle);
